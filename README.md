@@ -1,4 +1,4 @@
-# Device configuration for Nvidia SHIELD Tablet
+# Device configuration for Xiaomi MiPad (mocha)
 
 ## Spec Sheet
 | Feature                 | Specification                     |

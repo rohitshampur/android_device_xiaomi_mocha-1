@@ -16,8 +16,8 @@
 
 PRODUCT_AAPT_CONFIG += xlarge large
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
-TARGET_SCREEN_HEIGHT := 1920
-TARGET_SCREEN_WIDTH := 1200
+TARGET_SCREEN_HEIGHT := 2048
+TARGET_SCREEN_WIDTH := 1536
 
 PRODUCT_CHARACTERISTICS := tablet
 TARGET_TEGRA_VERSION := t124
@@ -26,21 +26,28 @@ TARGET_TEGRA_TOUCH := raydium
 
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 
-$(call inherit-product-if-exists, vendor/nvidia/shieldtablet/shieldtablet-vendor.mk)
+$(call inherit-product-if-exists, vendor/xiaomi/mocha/mocha-vendor.mk)
 
 PRODUCT_SYSTEM_PROPERTY_BLACKLIST := ro.product.name
 
+
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += \
-    device/nvidia/shieldtablet/overlay
+    device/xiaomi/mocha/overlay
 
 # Ramdisk
 PRODUCT_PACKAGES += \
-    fstab.tn8 \
-    init.tn8.rc \
-    init.tn8_common.rc \
-    power.tn8.rc \
-    ueventd.tn8.rc
+    fstab.mocha \
+    init.mocha.rc \
+    init.t124_emmc.rc \
+    init.t124_sata.rc \
+    init.cal.rc \
+    init.hdcp.rc \
+    init.t124.rc \
+    init.tlk.rc \
+    init.nv_dev_board.usb.rc \
+    power.mocha.rc \
+    ueventd.mocha.rc
 
 # Permissions
 PRODUCT_COPY_FILES += \
@@ -123,9 +130,40 @@ PRODUCT_PACKAGES += Gello
 #$(call inherit-product-if-exists, vendor/nvidia/shield_common/blake-blobs.mk)
 
 # Console Mode
-$(call inherit-product-if-exists, vendor/nvidia/shield_common/consolemode-blobs.mk)
+$(call inherit-product-if-exists, vendor/xiaomi/mocha/consolemode-blobs.mk)
 
 # Stock Camera
-$(call inherit-product-if-exists, vendor/nvidia/shield_common/nvcamera-blobs.mk)
+$(call inherit-product-if-exists, vendor/xiaomi/mocha/nvcamera-blobs.mk)
 
-$(call inherit-product, device/nvidia/shield-common/shield.mk)
+# Common build.props
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.opengles.version = 196609 \
+    wifi.interface=wlan0 \
+    ap.interface=wlan0 \
+    persist.tegra.nvmmlite = 1 \
+    persist.wlan.ti.calibrated = 0 \
+    ro.sf.override_null_lcd_density = 0 \
+    ro.sf.lcd_density=320 \
+    persist.tegra.compositor=glcomposer \
+    ro.input.noresample=1 \
+    ro.com.google.clientidbase=android-nvidia \
+    ro.zygote.disable_gl_preload=true \
+    pbc.enabled=0 \
+    pbc.log=0 \
+    pbc.board_power_threshold=20000 \
+    pbc.low_polling_freq_threshold=1000 \
+    pbc.rails=cpu,core,dram,gpu \
+    pbc.cpu.power=/sys/bus/i2c/devices/7-0045/power1_input \
+    pbc.cpu.cap=/dev/cpu_freq_max \
+    pbc.cpu.cap.af=/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies \
+    pbc.core.power=/sys/bus/i2c/devices/7-0043/power1_input \
+    pbc.dram.power=/sys/bus/i2c/devices/7-0049/power1_input \
+    pbc.gpu.power=/sys/bus/i2c/devices/7-004b/power1_input \
+    pbc.gpu.cap=/dev/gpu_freq_max \
+    pbc.gpu.cap.af=/sys/devices/platform/host1x/gk20a.0/devfreq/gk20a.0/available_frequencies \
+    af.resampler.quality = 3
+#    persist.tegra.didim.enable = 1 \
+#    persist.tegra.didim.video = 5 \
+#    persist.tegra.didim.normal = 3
+
+#$(call inherit-product, device/nvidia/shield-common/shield.mk)
